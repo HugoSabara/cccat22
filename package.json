@@ -4,11 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-      "docker:build": "docker build -t cccat22_backend docker",
-      "docker:run":   "docker run -it -v %cd%/.:/app cccat22_backend bash",
-      "compose:up":   "docker compose -f docker/docker-compose.yaml up -d --build",
-      "compose:down": "docker compose -f docker/docker-compose.yaml -v down",
-      "compose:exec": "docker compose -f docker/docker-compose.yaml exec -it backend bash "
+    "docker:build": "docker build -t cccat22_backend docker",
+    "docker:run": "docker run -it -v %cd%/.:/app cccat22_backend bash",
+    "compose:up": "docker compose -f docker/docker-compose.yaml up -d --build",
+    "compose:down": "docker compose -f docker/docker-compose.yaml -v down",
+    "compose:exec": "docker compose -f docker/docker-compose.yaml exec -it backend bash "
   },
   "dependencies": {
     "@types/express": "^5.0.3",

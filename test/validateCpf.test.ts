@@ -1,4 +1,4 @@
-/*
+
 import { validateCpf } from "../src/validateCpf";
 
 test.each([
@@ -20,4 +20,3 @@ test.each([
     const isValid = validateCpf(cpf);
     expect(isValid).toBe(false);
 });
-*/
