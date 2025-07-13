@@ -11,19 +11,11 @@ create table ccca.account (
 	primary key (account_id)
 );
 
-create table ccca.deposit (
-    deposit_id uuid,
-    account_id number,
-    assetId text,
-    quantity number,
-    primary key (deposit_id)
-);
-
-create table ccca.withdraw (
-    withdraw_id number,
-    assetId text,
-    quantity number,
-    primary key (withdraw_id)
+create table ccca.account_asset (
+	account_id uuid,
+	asset_id text,
+	quantity numeric,
+	primary key (account_id, asset_id)
 );
 
 /*
