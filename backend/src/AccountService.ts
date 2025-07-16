@@ -9,7 +9,7 @@ export const signup = async (account : any) => {
     account.accountId = crypto.randomUUID();
     if (!validateName(account.name)) throw new Error("Invalid name");
     if (!validateEmail(account.email)) throw new Error("Invalid email");
-    if (!validateCpf(account.cpq)) throw new Error("Invalid document");
+    if (!validateCpf(account.document)) throw new Error("Invalid document");
     if (!validatePassword(account.password)) throw new Error("Invalid password");    
     await salveAccount(account);
     return {

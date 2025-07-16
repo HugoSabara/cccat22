@@ -19,6 +19,7 @@ export async function getAccountById(accountId: string) {
     const connection = pgp()("postgres://postgres:123456@db:5432/app");
     const [accountData] = await connection.query("select * from ccca.account where account_id = $1", [accountId]);
     await connection.$pool.end();   
+    return accountData;
 };
 
 export async function salveWithdraw (withDraw: any){

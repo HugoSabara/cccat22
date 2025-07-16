@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { getAccount, signup } from "./accountService";
+import { getAccount, signup } from "./AccountService";
 import cors from "cors";
 const app = express();
 app.use(express.json());
