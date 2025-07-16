@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express"
 import crypto from "crypto"
+//import cors from "cors";
 import pgp from "pg-promise";
 import { validateCpf } from "./validateCpf";
 const app = express();
