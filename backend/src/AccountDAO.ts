@@ -1,34 +1,53 @@
 import pgp from "pg-promise";
 
-
-export async function salveAccount(account: any) {
-    const connection = pgp()("postgres://postgres:123456@db:5432/app");
-    await connection.query("insert into ccca.account (account_id, name, email, document, password) values ($1, $2, $3, $4, $5)",
-        [account.accountId, account.name, account.email, account.document, account.password]);
-    await connection.$pool.end();
+export default interface AccountDAO {
+    save(account: any): Promise<void>;
+    getById(accountId: string): Promise<any>;    
 }
 
-export async function salveDeposit(deposit:any) {
+export class AccountDAODatabase implements AccountDAO {
+
+    async save(account: any): Promise<void> {
+        const connection = pgp()("postgres://postgres:123456@db:5432/app");
+        await connection.query("insert into ccca.account (account_id, name, email, document, password) values ($1, $2, $3, $4, $5)",
+            [account.accountId, account.name, account.email, account.document, account.password]);
+        await connection.$pool.end();
+    }
+    
+    async getById(accountId: string): Promise<any> {
+        const connection = pgp()("postgres://postgres:123456@db:5432/app");
+        const [accountData] = await connection.query("select * from ccca.account where account_id = $1", [accountId]);
+        await connection.$pool.end();
+        return accountData;
+    }
+}
+
+export class AccountDAOMemory implements AccountDAO {
+    accounts: any[] = [];
+
+    async save(account: any): Promise<void> {
+        this.accounts.push(account);
+    }
+
+    async getById(accountId: string): Promise<any> {
+        return this.accounts.find((account: any) => account.accountId === accountId);
+    }
+
+}
+
+/* 
+async salveDeposit(deposit: any): Promise<void> {
     const connection = pgp()("postgres://postgres:123456@db:5432/app");
     await connection.query("insert into ccca.account_asset (account_id, asset_id, quantity) values ($1, $2, $3)",
-        [deposit.accountId, deposit.assetId, deposit.quantity]);
-        await connection.$pool.end();    
-};
-
-export async function getAccountById(accountId: string) {
-    const connection = pgp()("postgres://postgres:123456@db:5432/app");
-    const [accountData] = await connection.query("select * from ccca.account where account_id = $1", [accountId]);
-    await connection.$pool.end();   
-    return accountData;
-};
-
-export async function salveWithdraw (withDraw: any){
-    const connection = pgp()("postgres://postgres:123456@db:5432/app");
-    await connection.query("insert into ccca.account (account_id, name, email, document, password) values ($1, $2, $3, $4, $5)",
-        [withDraw.accountId, withDraw.name, withDraw.email, withDraw.document, withDraw.password]);
-        await connection.$pool.end();      
-        
-};
-
-
-
+    [deposit.accountId, deposit.assetId, deposit.quantity]);
+    await connection.$pool.end();
+    }
+    
+    
+    async salveWithdraw(withDraw: any): Promise<void> {
+        const connection = pgp()("postgres://postgres:123456@db:5432/app");
+        await connection.query("insert into ccca.account (account_id, name, email, document, password) values ($1, $2, $3, $4, $5)",
+            [withDraw.accountId, withDraw.name, withDraw.email, withDraw.document, withDraw.password]);
+            await connection.$pool.end();
+        }
+            */
