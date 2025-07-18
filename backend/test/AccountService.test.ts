@@ -62,7 +62,7 @@ test("Não deve criar uma conta se a senha tiver menos de 8 caracteres", async (
         name: "John Doe",
         email: "john.doe@gmail.com",
         document: "97456321558",
-        password: "asdqwe123"
+        password: "asdqwe"
     }
     await expect(() => accountService.signup(inputSignup)).rejects.toThrow("Invalid password");
 });
