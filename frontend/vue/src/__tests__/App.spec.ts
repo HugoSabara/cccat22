@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils"
 import App from "../App.vue";
+import { AccountGatewayHttp, AccountGatewayMemory } from '@/AccountGateway';
 
 function sleep (time: number) {
     return new Promise((resolve) => {
@@ -12,7 +13,14 @@ function sleep (time: number) {
 
 describe("APP.vue", () =>{
     it ("Deve criar uma conta", async() => {
-        const wrapper = mount(App, {});
+        const accountGateway = new AccountGatewayMemory();
+        const wrapper = mount(App, {
+            global: {
+                provide: {
+                    accountGateway
+                }
+            }
+        });        
          const input = {
             name: "John Doe",
             email: "john.doe@gmail.com",
@@ -26,11 +34,18 @@ describe("APP.vue", () =>{
         await wrapper.get(".input-password").setValue(input.password);
         await wrapper.get(".button-signup").trigger("click");
         await sleep(200);
-        expect(wrapper.get(".span-message").text()).toBe("sucess");
+        expect(wrapper.get(".span-message").text()).toBe("success");
         expect(wrapper.get(".span-account-id").text()).toBeDefined();
     });
     it ("Não deve criar uma conta se o nome for inválido", async() => {
-        const wrapper = mount(App, {});
+        const accountGateway = new AccountGatewayMemory();
+        const wrapper = mount(App, {
+            global: {
+                provide: {
+                    accountGateway
+                }
+            }
+        });       
          const input = {
             name: "John",
             email: "john.doe@gmail.com",
