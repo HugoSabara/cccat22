@@ -3,14 +3,17 @@ import { validateEmail } from "./validateEmail";
 import { validateName } from "./validateName";
 import { validateCpf } from "./validateCpf";
 import { validatePassword } from "./validatePassword";
+import { inject } from "./Registry";
 import AccountDAO from "./AccountDAO";
+import AccountAssetDAO from "./AccountAssetDAO";
 
 
 export default class AccountService {
-    
-    constructor (readonly accountDAO: AccountDAO) {
-    }     
-    
+    @inject("accountDAO")
+    accountDAO!: AccountDAO;
+    @inject("accountAssetDAO")
+    accountAssetDAO!: AccountAssetDAO;
+
     async signup (account : any) {
         account.accountId = crypto.randomUUID();
         if (!validateName(account.name)) throw new Error("Invalid name");
@@ -25,29 +28,24 @@ export default class AccountService {
             
     async getAccount (accountId: string) {
         const account = await this.accountDAO.getById(accountId);
+         if (!account) throw new Error("Account not found");
+        account.balances = await this.accountAssetDAO.getByAccountId(accountId);
         return account;
-    };
+    }
+
+    async deposit (acccountAsset: any){
+        const account = await this.accountDAO.getById(acccountAsset.accountId);
+        if (!account) throw new Error("Account not found");
+        await this.accountAssetDAO.save(acccountAsset);
+    }
+
+    async withdraw (acccountAsset: any){
+        const account = await this.getAccount(acccountAsset.accountId);
+        const balance = account.balances.find((balance: any) => balance.asset_id === acccountAsset.assetId);
+        const quantity = parseFloat(balance.quantity) - acccountAsset.quantity;
+        if (quantity < 0) throw new Error("Insufficient funds");
+        await this.accountAssetDAO.update({accountId: acccountAsset.accountId, assetId: acccountAsset.assetId, quantity});
+    }
 }
 
-/*
-app.post("/deposit", async (req: Request, res: Response) => {
-    const deposit = req.body;
-    console.log("/deposit", deposit);
-    await connection.query("insert into ccca.account_asset (account_id, asset_id, quantity) values ($1, $2, $3)",
-        [deposit.accountId, deposit.assetId, deposit.quantity]);
-    res.json({ success: true });
-});
-
-
-app.post("/withdraw", async (req: Request, res: Response) => {
-    const account = req.body;
-    console.log("/signup", account);
-    const accountId = crypto.randomUUID();
-    await connection.query("insert into ccca.account (account_id, name, email, document, password) values ($1, $2, $3, $4, $5)",
-        [accountId, account.name, account.email, account.document, account.password]);
-    res.json({
-        accountId
-    });
-});
-*/
 
