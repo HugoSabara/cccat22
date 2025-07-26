@@ -1,11 +1,11 @@
 import crypto from "crypto";
-import { validateEmail } from "./validateEmail";
-import { validateName } from "./validateName";
-import { validateCpf } from "./validateCpf";
-import { validatePassword } from "./validatePassword";
-import { inject } from "./Registry";
-import AccountDAO from "./AccountDAO";
-import AccountAssetDAO from "./AccountAssetDAO";
+import { validateCpf } from "../../domain/validateCpf";
+import { validateEmail } from "../../domain/validateEmail";
+import { validateName } from "../../domain/validateName";
+import { validatePassword } from "../../domain/validatePassword";
+import AccountAssetDAO from "../../infra/dao/AccountAssetDAO";
+import AccountDAO from "../../infra/dao/AccountDAO";
+import { inject } from "../../infra/di/Registry";
 
 
 export default class AccountService {

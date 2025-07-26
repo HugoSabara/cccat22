@@ -1,13 +1,17 @@
-import { AccountDAODatabase, AccountDAOMemory } from "../src/AccountDAO";
-import AccountService from "../src/AccountService";
+import { AccountDAODatabase, AccountDAOMemory } from "../../src/infra/dao/AccountDAO";
 import sinon from "sinon";
-import Registry from "../src/Registry";
-import { AccountAssetDAODatabase } from "../src/AccountAssetDAO";
+import Registry from "../../src/infra/di/Registry";
+import { AccountAssetDAODatabase } from "../../src/infra/dao/AccountAssetDAO";
 import crypto from "crypto";
+import DataBaseConnection, { PgPromiseAdapter } from "../../src/infra/database/DataBaseConnection";
+import AccountService from "../../src/application/service/AccountService";
 
+let connection: DataBaseConnection
 let accountService: AccountService;
 
 beforeEach(() => {
+    connection = new PgPromiseAdapter();
+    Registry.getInstance().provide("databaseConnection", connection);
     Registry.getInstance().provide("accountDAO", new AccountDAODatabase());
     Registry.getInstance().provide("accountAssetDAO", new AccountAssetDAODatabase());
     accountService = new AccountService();
@@ -219,7 +223,7 @@ test("Deve sacar de uma conta", async () => {
     expect(outputGetAccount.balances[0].quantity).toBe("500");
 });
 
-test.only("Não deeve sacar de uma conta se não tiver saldo suficiente", async () => {
+test("Não deeve sacar de uma conta se não tiver saldo suficiente", async () => {
     const inputSignup = {
         name: "John Doe",
         email: "john.doe@gmail.com",
@@ -240,4 +244,8 @@ test.only("Não deeve sacar de uma conta se não tiver saldo suficiente", async 
     }
     await expect(() => accountService.withdraw(inputWithdraw)).rejects.toThrow(new Error("Insufficient funds"));
    
+});
+
+afterEach(async () => {
+    await connection.close();
 });
