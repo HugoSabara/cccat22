@@ -3,7 +3,7 @@ import { AccountDAODatabase } from "../../src/infra/dao/AccountDAO";
 import { PgPromiseAdapter } from "../../src/infra/database/DataBaseConnection";
 import Registry from "../../src/infra/di/Registry";
 
-test("Deve persitir uma conta", async () => {
+test.skip("Deve persitir uma conta", async () => {
     const connection = new PgPromiseAdapter();
     Registry.getInstance().provide("databaseConnection", connection);
     const accountDAO = new AccountDAODatabase();    

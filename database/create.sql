@@ -18,27 +18,28 @@ create table ccca.account_asset (
 	primary key (account_id, asset_id)
 );
 
-/*
-Deposit (Depósito)
-Adicionar fundos em uma conta.
+create table ccca.order (
+	order_id uuid,
+	market_id text,
+	account_id uuid,
+	side text,
+	quantity numeric,
+	price numeric,
+	fill_quantity numeric,
+	fill_price numeric,
+	status text,
+	timestamp timestamptz,
+	primary key (order_id)
+);
 
-Input: accountId, assetId, quantity
-Output: void
-
-Regras:
-
-A conta deve existir
-O assetId permitido é BTC ou USD
-A quantidade deve ser maior que zero
-Withdraw (Saque)
-Retirar fundos de uma conta.
-
-Input: accountId, assetId, quantity
-Output: void
-
-Regras:
-
-A conta deve existir
-O assetId permitido é BTC ou USD
-A quantidade deve ser maior ou igual ao saldo
-*/
+create table ccca.trade (
+	trade_id uuid,
+	market_id text,
+	buy_order_id uuid,
+	sell_order_id uuid,
+	side text,
+	quantity numeric,
+	price numeric,
+	timestamp timestamptz,
+	primary key (trade_id)
+);

@@ -7,6 +7,7 @@ import Deposit from "../../src/application/usecase/Deposit";
 import GetAccount from "../../src/application/usecase/GetAccount";
 import Withdraw from "../../src/application/usecase/Withdraw";
 import { AccountRepositoryDatabase } from "../../src/infra/repository/AccountRepository";
+import crypto from "crypto";
 
 let connection: DataBaseConnection
 let signup: Signup;
@@ -27,7 +28,7 @@ beforeEach(() => {
 });
 
 
-test("Deve sacar de uma conta", async () => {
+test("Deve depositar em uma conta", async () => {
     const inputSignup = {
         name: "John Doe",
         email: "john.doe@gmail.com",
@@ -41,18 +42,13 @@ test("Deve sacar de uma conta", async () => {
         quantity: 1000
     }
     await deposit.execute(inputDeposit);
-        const inputWithdraw = {
-        accountId: outputSignup.accountId,
-        assetId: "USD",
-        quantity: 500
-    }
-    await withdraw.execute(inputWithdraw);
     const outputGetAccount = await getAccount.execute(outputSignup.accountId);
-    expect(outputGetAccount.balances[0].assetId).toBe("USD");
-    expect(outputGetAccount.balances[0].quantity).toBe(500);
+    expect(outputGetAccount.balances[0].assetId).toBe("USD");   
+    expect(outputGetAccount.balances[0].quantity).toBe(1000);
+
 });
 
-test("Não deeve sacar de uma conta se não tiver saldo suficiente", async () => {
+test("Deve depositar em uma conta que não existe", async () => {
     const inputSignup = {
         name: "John Doe",
         email: "john.doe@gmail.com",
@@ -61,17 +57,11 @@ test("Não deeve sacar de uma conta se não tiver saldo suficiente", async () =>
     }
     const outputSignup = await signup.execute(inputSignup);
     const inputDeposit = {
-        accountId: outputSignup.accountId,
+        accountId: crypto.randomUUID(),
         assetId: "USD",
-        quantity: 500
+        quantity: 1000        
     }
-    await deposit.execute(inputDeposit);
-        const inputWithdraw = {
-        accountId: outputSignup.accountId,
-        assetId: "USD",
-        quantity: 1000
-    }
-    await expect(() =>withdraw.execute(inputWithdraw)).rejects.toThrow(new Error("Insufficient funds"));
+    await expect(() => deposit.execute(inputDeposit)).rejects.toThrow(new Error("Account not found"));
 });
 
 afterEach(async () => {
