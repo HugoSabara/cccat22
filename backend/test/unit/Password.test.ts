@@ -1,10 +1,9 @@
-import { validatePassword } from "../../src/domain/validatePassword";
+import Password from "../../src/domain/Password";
 
 test.each([
     "asdQWE123",
 ])("Deve validar um password válido: %s", (password: string) => {
-    const isValid = validatePassword (password);
-    expect(isValid).toBe(true);
+    expect(new Password(password)).toBeDefined();
 });
 
 test.each([
@@ -13,6 +12,5 @@ test.each([
     "ASDWQUJ12",
     "ASDWQUJAQE",
 ])("Deve testar um password inválido: %s", (password: any) => {
-    const isValid = validatePassword(password);
-    expect(isValid).toBe(false);
+   expect(() => new Password(password)).toThrow(new Error("Invalid password"))
 });

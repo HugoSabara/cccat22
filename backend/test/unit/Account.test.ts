@@ -3,10 +3,10 @@ import Account from "../../src/domain/Account";
 
 test("Deve criar uma conta", function () {
     const account = Account.create("John Doe", "john.doe@gmail.com", "97456321558", "asdQWE123");
-    expect(account.name).toBe("John Doe");
-    expect(account.email).toBe("john.doe@gmail.com");
-    expect(account.document).toBe("97456321558");  
-    expect(account.password).toBe("asdQWE123"); 
+    expect(account.getName()).toBe("John Doe");
+    expect(account.getEmail()).toBe("john.doe@gmail.com");
+    expect(account.getDocument()).toBe("97456321558");  
+    expect(account.getPassWord()).toBe("asdQWE123"); 
 });
 
 test("Não deve criar uma conta com nome inválido", function () {

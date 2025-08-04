@@ -11,6 +11,9 @@ import PlaceOrder from "../../src/application/usecase/PlaceOrder";
 import GetOrder from "../../src/application/usecase/GetOrder";
 import { OrderRepositoryDatabase } from "../../src/infra/repository/OrderRepository";
 import GetDepth from "../../src/application/usecase/GetDepth";
+import ExecuteOrder from "../../src/application/usecase/ExecuteOrder";
+import { MediatorMemory } from "../../src/infra/mediator/Mediator";
+
 
 let connection: DataBaseConnection
 let signup: Signup;
@@ -28,6 +31,8 @@ beforeEach(() => {
     Registry.getInstance().provide("accountAssetDAO", new AccountAssetDAODatabase());
     Registry.getInstance().provide("accountRepository", new AccountRepositoryDatabase());
     Registry.getInstance().provide("OrderRepository", new OrderRepositoryDatabase());
+    const mediator = new MediatorMemory();
+    Registry.getInstance().provide("mediator", mediator);    
     signup = new Signup();
     getAccount = new GetAccount();
     deposit = new Deposit();
@@ -35,6 +40,10 @@ beforeEach(() => {
     placeOrder = new PlaceOrder();
     getOrder = new GetOrder();
     getDepth = new GetDepth();
+    const executeOrder = new ExecuteOrder();
+    mediator.register("orderPlaced", async (event: any) =>{
+        await executeOrder.execute(event.marketId);
+    });
 });
 
 
@@ -233,8 +242,7 @@ test("Deve criar três ordens de compra e uma ordem de venda com valores diferen
     const outputGetDepth = await getDepth.execute(marketId);
     expect(outputGetDepth.buys).toHaveLength(0);
     expect(outputGetDepth.sells).toHaveLength(0);
-    const outputGetOrder3 = await getOrder.execute(outputPlaceOrder3.orderId);
-    console.log(outputGetOrder3);
+    const outputGetOrder3 = await getOrder.execute(outputPlaceOrder3.orderId);    
 });
 
 afterEach(async () => {

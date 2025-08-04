@@ -1,10 +1,9 @@
-import { validateEmail } from "../../src/domain/validateEmail";
+import Email from "../../src/domain/Email";
 
 test.each([
     "hugosabara@gmail.com",
 ])("Deve validar um email válido: %s", (email: string) => {
-    const isValid = validateEmail(email);
-    expect(isValid).toBe(true);
+    expect(new Email(email)).toBeDefined();
 });
 
 test.each([
@@ -12,6 +11,5 @@ test.each([
     "hugo@",
     "hugo@gmail",
 ])("Deve testar um email inválido: %s", (email: any) => {
-    const isValid = validateEmail(email);
-    expect(isValid).toBe(false);
+    expect(() => new Email(email)).toThrow(new Error("Invalid email"));
 });

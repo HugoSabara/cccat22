@@ -7,6 +7,8 @@ import Signup from "./application/usecase/Signup";
 import GetAccount from "./application/usecase/GetAccount";
 import AccountController from "./infra/controller/AccountController";
 import { AccountRepositoryDatabase } from "./infra/repository/AccountRepository";
+import Mediator, { MediatorMemory } from "./infra/mediator/Mediator";
+import ExecuteOrder from "./application/usecase/ExecuteOrder";
 
 //entrypoint
 async function main() {
@@ -18,6 +20,12 @@ async function main() {
     Registry.getInstance().provide("httpServer", httpServer);
     Registry.getInstance().provide("signup", new Signup());
     Registry.getInstance().provide("getAccount", new GetAccount());
+    const executeOrder = new ExecuteOrder();
+    const mediator = new MediatorMemory();
+    Registry.getInstance().provide("mediator", mediator);
+    mediator.register("orderPlaced", async (event: any) =>{
+        await executeOrder.execute(event.marketId);
+    });
     new AccountController()
     httpServer.listen(3000);
 }

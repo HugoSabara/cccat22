@@ -14,12 +14,12 @@ export class AccountDAODatabase implements AccountDAO {
 
     async save(account: any): Promise<void> {
         await this.connection.query("insert into ccca.account (account_id, name, email, document, password) values ($1, $2, $3, $4, $5)",
-            [account.accountId, account.name, account.email, account.document, account.password]);
+            [account.accountId, account.getName(), account.getEmail(), account.getDocument(), account.getPassWord()]);
     }
 
     async update(account: any): Promise<void> {
         await this.connection.query("update ccca.account set name = $1, email = $2, document = $3, password = $4 where account_id = $5",
-            [account.name, account.email, account.document, account.password, account.accountId]);
+            [account.getName(), account.getEmail(), account.getDocument(), account.getPassWord(), account.accountId]);
     }
 
     async getById(accountId: string): Promise<any> {
