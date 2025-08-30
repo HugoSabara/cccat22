@@ -9,13 +9,7 @@
     "compose:up": "docker compose -f docker/docker-compose.yaml up -d --build",
     "compose:down": "docker compose -f docker/docker-compose.yaml -v down",
     "compose:exec": "docker compose -f docker/docker-compose.yaml exec -it backend bash",
-    "compose:db:down": "docker compose -f docker/docker-compose.yaml -v down db",
-    "compose:db:up": "docker compose -f docker/docker-compose.yaml up db -d"
-  },
-  "dependencies": {
-    "@types/amqplib": "^0.10.7",
-    "@types/cors": "^2.8.19",
-    "amqplib": "^0.10.8",
-    "cors": "^2.8.5"
-  }
+    "compose:db:down": "docker compose -f docker/docker-compose.yaml -v down db-account db-query",
+    "compose:db:up": "docker compose -f docker/docker-compose.yaml up db-account db-query -d"
+  } 
 }

@@ -21,7 +21,7 @@ async function main () {
             price: Math.round(85000 + ((Math.random() * 1000) * (Math.random() > 0.5 ? 1 : -1)))
         }
         await axios.post("http://localhost:3000/place_order", inputPlaceOrder);
-        //await sleep(10);
+        //await sleep(10);        
     }
 }
 

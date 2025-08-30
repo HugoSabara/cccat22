@@ -8,6 +8,8 @@ import GetAccount from "../../src/application/usecase/GetAccount";
 import Withdraw from "../../src/application/usecase/Withdraw";
 import { AccountRepositoryDatabase } from "../../src/infra/repository/AccountRepository";
 import crypto from "crypto";
+import { CieloPaymentGateway, PJBankPaymentGateway } from "../../src/infra/gateway/PaymentGateway";
+import { CieloPaymentProcessor, PJBankPaymentProcessor } from "../../src/infra/fallback/PaymentProcessor";
 
 let connection: DataBaseConnection
 let signup: Signup;
@@ -21,6 +23,10 @@ beforeEach(() => {
     Registry.getInstance().provide("accountDAO", new AccountDAODatabase());
     Registry.getInstance().provide("accountAssetDAO", new AccountAssetDAODatabase());
     Registry.getInstance().provide("accountRepository", new AccountRepositoryDatabase());
+    //Registry.getInstance().provide("paymentGateway", new CieloPaymentGateway());
+    Registry.getInstance().provide("paymentGateway", new PJBankPaymentGateway());
+    const paymentProcessor = new PJBankPaymentProcessor(new CieloPaymentProcessor()) ;
+    Registry.getInstance().provide("paymentProcessor",paymentProcessor);
     signup = new Signup();
     getAccount = new GetAccount();
     deposit = new Deposit();

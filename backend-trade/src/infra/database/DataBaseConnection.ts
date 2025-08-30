@@ -11,7 +11,7 @@ export class PgPromiseAdapter implements DatabaseConnection {
     connection: any;
 
     constructor () {
-        this.connection = pgp()("postgres://postgres:123456@db:5432/app");
+        this.connection = pgp()("postgres://postgres:123456@db-account:5432/app");
     }
 
     query(statement: string, params: any): Promise<any> {
@@ -30,7 +30,7 @@ export class PgPromiseAdapterUoW implements DatabaseConnection {
     queries: { statement: string, params: any }[] = [];;
 
     constructor () {
-        this.connection = pgp()("postgres://postgres:123456@db:5432/app");
+        this.connection = pgp()("postgres://postgres:123456@db-account:5432/app");
     }
 
     async query(statement: string, params: any): Promise<any> {

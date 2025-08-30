@@ -4,6 +4,7 @@ import OrderRepository from "../../infra/repository/OrderRepository";
 import Order from "../../domain/Order";
 import Mediator from "../../infra/mediator/Mediator";
 import WalletRepository from "../../infra/repository/WalletRepository";
+import Outbox from "../../infra/outbox/Outbox";
 
 export default class PlaceOrder {
     @inject("accountRepository")
@@ -27,9 +28,7 @@ export default class PlaceOrder {
         // const asset = (input.side === "buy") ? paymentAsset : mainAsset;
         // const balance = wallet.getBalance(asset);
         // if (!balance || balance.quantity < input.quantity) throw new Error("Insufficient funds");
-        console.log ("place_order_execute")
         const order = Order.create(input.accountId, input.marketId, input.side, input.quantity, input.price);
-         console.log ("Order.create_execute")
         await this.orderRepository.save(order);
         await this.mediator.notifyAll("orderPlaced", order);
         // connection.commit();

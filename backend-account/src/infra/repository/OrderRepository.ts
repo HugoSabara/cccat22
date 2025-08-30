@@ -7,6 +7,7 @@ export default interface OrderRepository {
     update (order: Order): Promise<void>;
     getById (orderId: string): Promise<Order>;
     getByMarketIdAndStatus (marketId: string, status: string): Promise<Order[]>
+    delete (orderId: string): Promise<void>;
 }
 
 export class OrderRepositoryDatabase implements OrderRepository {
@@ -18,7 +19,6 @@ export class OrderRepositoryDatabase implements OrderRepository {
     }
       
     async update(order: Order): Promise<void> {
-        console.log ("UDPDATE")
         await this.connection.query("update ccca.order set status = $1, fill_quantity = $2, fill_price = $3 where order_id = $4", [order.status, order.fillQuantity, order.fillPrice, order.orderId]);
     }
 
@@ -36,6 +36,9 @@ export class OrderRepositoryDatabase implements OrderRepository {
             orders.push(order);
         }
         return orders;
+    }
+      async delete(orderId: string): Promise<void> {
+        await this.connection.query("delete from ccca.order where order_id = $1", [orderId]);
     }
 
 }

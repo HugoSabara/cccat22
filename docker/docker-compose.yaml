@@ -7,19 +7,30 @@ services:
     ports:
       - 3000:3000
       - 5173:5173
+      - 3003:3003
     working_dir: /app
     command: sleep infinity
     stop_grace_period: 2s
-  db:
+  db-account:
     image: postgres:14.3
     ports:
       - 5432:5432
     volumes:
-      - ../database/create.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../database/create-account.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: app
+  db-query:
+    image: postgres:14.3
+    ports:
+      - 5433:5432
+    volumes:
+      - ../database/create-query.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: app    
   queue:
     image: rabbitmq:3-management
     ports:

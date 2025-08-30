@@ -7,6 +7,7 @@ import Deposit from "../../src/application/usecase/Deposit";
 import GetAccount from "../../src/application/usecase/GetAccount";
 import Withdraw from "../../src/application/usecase/Withdraw";
 import { AccountRepositoryDatabase } from "../../src/infra/repository/AccountRepository";
+import { CieloPaymentProcessor } from "../../src/infra/fallback/PaymentProcessor";
 
 let connection: DataBaseConnection
 let signup: Signup;
@@ -20,6 +21,7 @@ beforeEach(() => {
     Registry.getInstance().provide("accountDAO", new AccountDAODatabase());
     Registry.getInstance().provide("accountAssetDAO", new AccountAssetDAODatabase());
     Registry.getInstance().provide("accountRepository", new AccountRepositoryDatabase());
+    Registry.getInstance().provide("paymentProcessor", new CieloPaymentProcessor());
     signup = new Signup();
     getAccount = new GetAccount();
     deposit = new Deposit();

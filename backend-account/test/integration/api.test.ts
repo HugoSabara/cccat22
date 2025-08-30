@@ -36,6 +36,7 @@ test("Não deve criar uma conta se o nome for inválido", async () => {
 
 test("Deve criar uma ordem de compra", async () => {
     const marketId = `BTC-USD-${Math.random()}`;
+    console.log(marketId, "1 buy");
     const input = {
         name: "John Doe",
         email: "john.doe@gmail.com",
@@ -44,6 +45,7 @@ test("Deve criar uma ordem de compra", async () => {
     }
     const responseSignup = await axios.post("http://localhost:3000/signup", input);
     const outputSignup = responseSignup.data;
+    
     const inputDeposit = {
         accountId: outputSignup.accountId,
         assetId: "USD",
@@ -68,7 +70,7 @@ test("Deve criar uma ordem de compra", async () => {
     expect(outputGetOrder.side).toBe(inputPlaceOrder.side);
     expect(outputGetOrder.quantity).toBe(inputPlaceOrder.quantity);
     expect(outputGetOrder.price).toBe(inputPlaceOrder.price);
-    
+    await sleep(500);
     const responseGetDepth = await axios.get(`http://localhost:3000/markets/${marketId}/depth`);
     const outputGetDepth = responseGetDepth.data;
     expect(outputGetDepth.buys).toHaveLength(1);
@@ -79,6 +81,7 @@ test("Deve criar uma ordem de compra", async () => {
 
 test("Deve criar várias ordens de compra com preços diferentes", async () => {
     const marketId = `BTC-USD-${Math.random()}`;
+    console.log(marketId, "2 buys 2 prices");
     const input = {
         name: "John Doe",
         email: "john.doe@gmail.com",
@@ -116,7 +119,7 @@ test("Deve criar várias ordens de compra com preços diferentes", async () => {
         quantity: 1,
         price: 84000
     });
-    
+    await sleep(500);
     const responseGetDepth = await axios.get(`http://localhost:3000/markets/${marketId}/depth`);
     const outputGetDepth = responseGetDepth.data;
     expect(outputGetDepth.buys).toHaveLength(2);
@@ -127,8 +130,9 @@ test("Deve criar várias ordens de compra com preços diferentes", async () => {
     expect(outputGetDepth.buys[1].price).toBe(85000);
 });
 
-test.only("Deve criar uma ordem de compra e outra de venda no mesmo valor", async () => {
+test("Deve criar uma ordem de compra e outra de venda no mesmo valor", async () => {
     const marketId = `BTC-USD-${Math.random()}`;
+    console.log(marketId, "0 0");
     const input = {
         name: "John Doe",
         email: "john.doe@gmail.com",
@@ -145,21 +149,21 @@ test.only("Deve criar uma ordem de compra e outra de venda no mesmo valor", asyn
     }
     await axios.post("http://localhost:3000/deposit", inputDeposit);
     
-    await axios.post("http://localhost:3000/place_order", {
+    await axios.post("http://localhost:3000/place_order_async", {
         accountId: outputSignup.accountId,
         marketId,
         side: "buy",
         quantity: 1,
         price: 85000
     });
-    await axios.post("http://localhost:3000/place_order", {
+    await axios.post("http://localhost:3000/place_order_async", {
         accountId: outputSignup.accountId,
         marketId,
         side: "sell",
         quantity: 1,
         price: 85000
     });
-    await sleep(200);
+    await sleep(500);
     const responseGetDepth = await axios.get(`http://localhost:3000/markets/${marketId}/depth`);
     const outputGetDepth = responseGetDepth.data;
     expect(outputGetDepth.buys).toHaveLength(0);
@@ -168,6 +172,7 @@ test.only("Deve criar uma ordem de compra e outra de venda no mesmo valor", asyn
 
 test("Deve criar duas ordens de compra e uma ordem de venda, no mesmo valor e mesma quantidade", async () => {
     const marketId = `BTC-USD-${Math.random()}`;
+    console.log(marketId, "1 sell");
     const input = {
         name: "John Doe",
         email: "john.doe@gmail.com",
@@ -205,7 +210,7 @@ test("Deve criar duas ordens de compra e uma ordem de venda, no mesmo valor e me
         quantity: 3,
         price: 85000
     });
-    
+    await sleep(500);
     const responseGetDepth = await axios.get(`http://localhost:3000/markets/${marketId}/depth`);
     const outputGetDepth = responseGetDepth.data;
     expect(outputGetDepth.buys).toHaveLength(0);
@@ -251,7 +256,7 @@ test("Deve criar três ordens de compra e uma ordem de venda, com valores difere
         quantity: 2,
         price: 85000
     });
-    
+    await sleep(500);
     const responseGetDepth = await axios.get(`http://localhost:3000/markets/${marketId}/depth`);
     const outputGetDepth = responseGetDepth.data;
     expect(outputGetDepth.buys).toHaveLength(0);
@@ -259,5 +264,5 @@ test("Deve criar três ordens de compra e uma ordem de venda, com valores difere
     
     const responseGetOrder3 = await axios.get(`http://localhost:3000/orders/${responsePlaceOrder3.data.orderId}`);
     const outputGetOrder3 = responseGetOrder3.data;
-    console.log(outputGetOrder3);
+    
 });

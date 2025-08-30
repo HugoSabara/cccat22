@@ -17,7 +17,6 @@ export default class Order {
     }
 
     static create (accountId: string, marketId: string, side: string, quantity: number, price: number) {
-        console.log ("Order--> create")
         const orderId = crypto.randomUUID();
         const status = "open";
         const timestamp = new Date();
@@ -33,6 +32,12 @@ export default class Order {
     fill (quantity: number, price: number) {
         this.fillPrice = ((this.fillQuantity * this.fillPrice) + (quantity * price))/ (this.fillQuantity + quantity);
         this.fillQuantity += quantity;
+        if (this.getAvailableQuantity() === 0) {
+            this.status = "closed";
+        }
+    }
+
+    calculateStatus () {
         if (this.getAvailableQuantity() === 0) {
             this.status = "closed";
         }
